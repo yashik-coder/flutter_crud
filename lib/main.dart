@@ -1,6 +1,13 @@
+import 'dart:math';
+import 'package:data_table_2/data_table_2.dart';
 import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/datatable_demo.dart';
+import 'package:flutter_crud/listview_data.dart';
+import 'package:flutter_crud/practice_Image_upload/imageupload.dart';
+import 'package:flutter_crud/screens/add_employee.dart';
+
+import 'package:flutter_crud/testing/paginated_data_table.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,7 +34,13 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: DataTableDemo(),
+
+      //home: listdata(),
+      //home: DataTableDemo(),
+      home: Paginateddatatable(),
+      //home: AddEmployee(),
+      //home: const UploadImage(title: 'Image Upload'),
+      //home: Home(),
       // home: const MyHomePage(
       //   title: 'demo',
       // ),
@@ -35,126 +48,64 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeScreenState extends State<HomeScreen> {
+  final DataTableSource _data = MyData();
+
   @override
   Widget build(BuildContext context) {
-    final _verticalScrollController = ScrollController();
-    final _horizontalScrollController = ScrollController();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text('Kindacode.com'),
       ),
-      body: Container(
-        height: 300,
-        width: 700,
-        child: AdaptiveScrollbar(
-          underColor: Colors.blueGrey.withOpacity(0.3),
-          sliderDefaultColor: Colors.grey.withOpacity(0.7),
-          sliderActiveColor: Colors.grey,
-          controller: _verticalScrollController,
-          child: AdaptiveScrollbar(
-            controller: _horizontalScrollController,
-            position: ScrollbarPosition.bottom,
-            underColor: Colors.blueGrey.withOpacity(0.3),
-            sliderDefaultColor: Colors.grey.withOpacity(0.7),
-            sliderActiveColor: Colors.grey,
-            child: SingleChildScrollView(
-              controller: _verticalScrollController,
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                controller: _horizontalScrollController,
-                scrollDirection: Axis.horizontal,
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 8.0, bottom: 16.0),
-                  child: DataTable(
-                    showCheckboxColumn: true,
-                    columns: const [
-                      DataColumn(
-                        label: Text('Name'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                      DataColumn(
-                        label: Text('Name'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                      DataColumn(
-                        label: Text('Year'),
-                      ),
-                    ],
-                    rows: List<DataRow>.generate(
-                      20,
-                      (int index) => DataRow(
-                        cells: <DataCell>[
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                          DataCell(
-                            Text('Row $index'),
-                          ),
-                        ],
-                        onSelectChanged: (bool? value) {},
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
+      body: PaginatedDataTable(
+        source: _data,
+        header: const Text('My Products'),
+        columns: const [
+          DataColumn(label: Text('ID')),
+          DataColumn(label: Text('Name')),
+          DataColumn(label: Text('Price')),
+          DataColumn(label: Text('test price'))
+        ],
+        columnSpacing: 100,
+        horizontalMargin: 10,
+        rowsPerPage: 8,
+        showCheckboxColumn: false,
       ),
     );
+  }
+}
+
+// The "soruce" of the table
+class MyData extends DataTableSource {
+  // Generate some made-up data
+  final List<Map<String, dynamic>> _data = List.generate(
+      200,
+      (index) => {
+            "id": index,
+            "title": "Item $index",
+            "price": Random().nextInt(10000)
+          });
+
+  @override
+  bool get isRowCountApproximate => false;
+  @override
+  int get rowCount => _data.length;
+  @override
+  int get selectedRowCount => 0;
+  @override
+  DataRow getRow(int index) {
+    return DataRow(cells: [
+      DataCell(Text(_data[index]['id'].toString())),
+      DataCell(Text(_data[index]["title"])),
+      DataCell(Text(_data[index]["price"].toString())),
+      DataCell(Text(_data[index]["price"].toString())),
+    ]);
   }
 }

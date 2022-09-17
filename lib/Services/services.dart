@@ -97,11 +97,12 @@ class Services {
   }
 
   // Method to Delete an Employee from Database...
-  static Future<String> deleteEmployee(String empId) async {
+  static Future<String> deleteEmployee(String empId, image) async {
     try {
       var map = <String, dynamic>{};
       map['action'] = _DELETE_EMP_ACTION;
       map['emp_id'] = empId;
+      map['image_name'] = image;
       final response = await http.post(ROOT, body: map);
       print('deleteEmployee Response: ${response.body}');
       if (200 == response.statusCode) {

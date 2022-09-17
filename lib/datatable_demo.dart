@@ -2,6 +2,8 @@ import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/Employee_Model/employee_model.dart';
 import 'package:flutter_crud/Services/services.dart';
+import 'package:flutter_crud/screens/add_employee.dart';
+import 'package:image_picker/image_picker.dart';
 
 class DataTableDemo extends StatefulWidget {
   //
@@ -122,7 +124,7 @@ class DataTableDemoState extends State<DataTableDemo> {
 
   _deleteEmployee(Employee employee) {
     _showProgress('Deleting Employee...');
-    Services.deleteEmployee(employee.id).then((result) {
+    Services.deleteEmployee(employee.id,employee.image).then((result) {
       if ('success' == result) {
         _getEmployees(); // Refresh after delete...
       }
@@ -157,8 +159,12 @@ class DataTableDemoState extends State<DataTableDemo> {
         ),
         // Lets add one more column to show a delete button
         DataColumn(
+          numeric: false,
+          label: Text('Image'),
+        ),
+        DataColumn(
           label: Text('DELETE'),
-        )
+        ),
       ],
       rows: _employees
           .map(
@@ -168,12 +174,18 @@ class DataTableDemoState extends State<DataTableDemo> {
                 // Add tap in the row and populate the
                 // textfields with the corresponding values to update
                 onTap: () {
-                  _showValues(employee);
-                  // Set the Selected employee to Update
-                  _selectedEmployee = employee;
-                  setState(() {
-                    _isUpdating = true;
-                  });
+                  // _showValues(employee);
+                  // // Set the Selected employee to Update
+                  // _selectedEmployee = employee;
+                  // setState(() {
+                  //   _isUpdating = true;
+                  // });
+
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              AddEmployee(employee: employee)));
                 },
               ),
               DataCell(
@@ -181,15 +193,20 @@ class DataTableDemoState extends State<DataTableDemo> {
                   employee.firstName.toUpperCase(),
                 ),
                 onTap: () {
-                  _showValues(employee);
-                  // Set the Selected employee to Update
-                  _selectedEmployee = employee;
-                  // Set flag updating to true to indicate in Update Mode
-                  setState(() {
-                    _isUpdating = true;
-                    _istextfieldshow = true;
-                    _submitbuttonshow = false;
-                  });
+                  // _showValues(employee);
+                  // // Set the Selected employee to Update
+                  // _selectedEmployee = employee;
+                  // // Set flag updating to true to indicate in Update Mode
+                  // setState(() {
+                  //   _isUpdating = true;
+                  //   _istextfieldshow = true;
+                  //   _submitbuttonshow = false;
+                  // });
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              AddEmployee(employee: employee)));
                 },
               ),
               DataCell(
@@ -197,16 +214,40 @@ class DataTableDemoState extends State<DataTableDemo> {
                   employee.lastName.toUpperCase(),
                 ),
                 onTap: () {
-                  _showValues(employee);
-                  // Set the Selected employee to Update
-                  _selectedEmployee = employee;
-                  setState(() {
-                    _isUpdating = true;
-                    _istextfieldshow = true;
-                    _submitbuttonshow = false;
-                  });
+                  // _showValues(employee);
+                  // // Set the Selected employee to Update
+                  // _selectedEmployee = employee;
+                  // setState(() {
+                  //   _isUpdating = true;
+                  //   _istextfieldshow = true;
+                  //   _submitbuttonshow = false;
+                  // });
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              AddEmployee(employee: employee)));
                 },
               ),
+              DataCell(onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) =>
+                            AddEmployee(employee: employee)));
+              },
+                  Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.network(
+                            width: 50,
+                            height: 50,
+                            fit: BoxFit.cover,
+                            'http://192.168.29.77/EmployeesDB/images/${employee.image}'),
+                      )
+                    ],
+                  )),
               DataCell(IconButton(
                 icon: const Icon(
                   Icons.delete,
@@ -397,12 +438,16 @@ class DataTableDemoState extends State<DataTableDemo> {
             ? FloatingActionButton(
                 splashColor: Colors.green,
                 onPressed: () {
-                  _addEmployee();
-                  setState(() {
-                    _istextfieldshow = true;
-                    _submitbuttonshow = true;
-                    _addfieldbutton = false;
-                  });
+                  // _addEmployee();
+                  // setState(() {
+                  //   _istextfieldshow = true;
+                  //   _submitbuttonshow = true;
+                  //   _addfieldbutton = false;
+                  // });
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => AddEmployee()));
                 },
                 child: const Icon(Icons.add),
               )
