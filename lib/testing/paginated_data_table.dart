@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'dart:math';
-
+import 'package:data_table_2/data_table_2.dart';
+import 'package:flutter/gestures.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/Employee_Model/employee_model.dart';
 import 'package:flutter_crud/Services/services.dart';
@@ -35,6 +37,15 @@ class _PaginateddatatableState extends State<Paginateddatatable> {
     super.initState();
   }
 
+  _deleteEmployee(Employee employee) {
+    _showProgress('Deleting Employee...');
+    Services.deleteEmployee(employee.id, employee.image).then((result) {
+      if ('success' == result) {
+        _getEmployees(); // Refresh after delete...
+      }
+    });
+  }
+
   _getEmployees() {
     _showProgress('Loading Employees...');
     Services.getEmployees().then((employees) {
@@ -52,6 +63,9 @@ class _PaginateddatatableState extends State<Paginateddatatable> {
       _titleProgress = message;
     });
   }
+
+  bool _isSortAsc = true;
+  int _currentSortColumn = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -72,19 +86,68 @@ class _PaginateddatatableState extends State<Paginateddatatable> {
               icon: Icon(Icons.add))
         ],
       ),
-      body: PaginatedDataTable(
-        source: _dtSource,
-        columns: const [
-          DataColumn(label: Text('ID')),
-          DataColumn(label: Text('First Name')),
-          DataColumn(label: Text('Last Name')),
-          DataColumn(label: Text('Image')),
-          DataColumn(label: Text('Action'))
-        ],
-        columnSpacing: 100,
-        horizontalMargin: 10,
-        rowsPerPage: 8,
-        showCheckboxColumn: false,
+      body: Container(
+        width: double.infinity,
+        child: SingleChildScrollView(
+          child: PaginatedDataTable(
+            sortAscending: _isSortAsc,
+            source: _dtSource,
+            sortColumnIndex: _currentSortColumn,
+            arrowHeadColor: Colors.blueAccent,
+            columns: [
+              DataColumn(
+                numeric: true,
+                label: Text('ID'),
+                onSort: (columnIndex, _) {
+                  setState(() {
+                    _currentSortColumn = columnIndex;
+                    if (_isSortAsc) {
+                      _employees.sort((a, b) => b.count.compareTo(a.count));
+                    } else {
+                      _employees.sort((a, b) => a.count.compareTo(b.count));
+                    }
+                    _isSortAsc = !_isSortAsc;
+                  });
+                },
+              ),
+              DataColumn(
+                label: Text('First Name'),
+                onSort: (columnIndex, _) {
+                  setState(() {
+                    _currentSortColumn = columnIndex;
+                    if (_isSortAsc) {
+                      _employees.sort((a, b) => b.firstName.compareTo(a.id));
+                    } else {
+                      _employees.sort((a, b) => a.firstName.compareTo(b.id));
+                    }
+                    _isSortAsc = !_isSortAsc;
+                  });
+                },
+              ),
+              DataColumn(
+                label: Text('Last Name'),
+                onSort: (columnIndex, _) {
+                  setState(() {
+                    _currentSortColumn = columnIndex;
+                    if (_isSortAsc) {
+                      _employees.sort((a, b) => b.lastName.compareTo(a.id));
+                    } else {
+                      _employees.sort((a, b) => a.firstName.compareTo(b.id));
+                    }
+                    _isSortAsc = !_isSortAsc;
+                  });
+                },
+              ),
+              DataColumn(label: Text('Image')),
+              DataColumn(label: Text('Action'))
+            ],
+            columnSpacing: 100,
+            horizontalMargin: 10,
+            onRowsPerPageChanged: (perPage) {},
+            rowsPerPage: 10,
+            showCheckboxColumn: false,
+          ),
+        ),
       ),
     );
   }
@@ -115,6 +178,17 @@ class MyData extends DataTableSource {
   @override
   int get selectedRowCount => 0;
 
+  _deleteEmployee(Employee employee) {
+    // _showProgress('Deleting Employee...');
+    Services.deleteEmployee(employee.id, employee.image).then((result) {
+      if ('success' == result) {
+        // _getEmployees(); // Refresh after delete...
+        Get.offAll(() => Paginateddatatable());
+        Get.snackbar('', 'Deleted Successfully');
+      }
+    });
+  }
+
   @override
   DataRow? getRow(int index) {
     assert(index >= 0);
@@ -127,45 +201,46 @@ class MyData extends DataTableSource {
     return DataRow.byIndex(
       index: index, // DONT MISS THIS
       cells: <DataCell>[
-        DataCell(
-              onTap: () {
-                  // _showValues(employee);
-                  // // Set the Selected employee to Update
-                  // _selectedEmployee = employee;
-                  // // Set flag updating to true to indicate in Update Mode
-                  // setState(() {
-                  //   _isUpdating = true;
-                  //   _istextfieldshow = true;
-                  //   _submitbuttonshow = false;
-                  // });
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              AddEmployee(employee: _user)));
-                },
-          
-          Text('${_user.id}')),
-        DataCell(Text('${_user.firstName}')),
-        DataCell(Text('${_user.lastName}')),
-        DataCell(Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Image.network(
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                  'http://192.168.29.77/EmployeesDB/images/${_user.image}'),
-            )
-          ],
-        )),
+        DataCell(onTap: () {
+          Get.off(() => AddEmployee(
+                employee: _user,
+              ));
+        }, Text('${_user.count}')),
+        DataCell(onTap: () {
+          Get.off(AddEmployee(
+            employee: _user,
+          ));
+        }, Text('${_user.firstName}')),
+        DataCell(onTap: () {
+          Get.off(() => AddEmployee(
+                employee: _user,
+              ));
+        }, Text('${_user.lastName}')),
+        DataCell(onTap: () {
+          Get.off(() => AddEmployee(
+                employee: _user,
+              ));
+        },
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.network(
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                      'http://192.168.29.77/EmployeesDB/images/${_user.image}'),
+                ),
+              ],
+            )),
         DataCell(
           IconButton(
             hoverColor: Colors.transparent,
             splashColor: Colors.transparent,
             icon: const Icon(Icons.delete),
-            onPressed: () {},
+            onPressed: () {
+              _deleteEmployee(_user);
+            },
           ),
         ),
       ],

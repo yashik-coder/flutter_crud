@@ -6,7 +6,7 @@ import 'package:flutter_crud/datatable_demo.dart';
 import 'package:flutter_crud/listview_data.dart';
 import 'package:flutter_crud/practice_Image_upload/imageupload.dart';
 import 'package:flutter_crud/screens/add_employee.dart';
-
+import 'package:get/get.dart';
 import 'package:flutter_crud/testing/paginated_data_table.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
