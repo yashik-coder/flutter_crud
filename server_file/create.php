@@ -176,4 +176,31 @@
         return;
     }
 
+    if('DATE_WISE' == $action){
+    $db_data = array();
+    $i=1;
+    $sql = "SELECT DATE(date) as Date_wise,COUNT(*) as count_employee_registration FROM `employees` GROUP BY DATE(date)";
+    $result = $conn->query($sql);
+    if($result->num_rows > 0){
+
+        while($row = $result->fetch_assoc()){
+            $db_data[]=array(
+                'Date_wise'=>$row['Date_wise'],
+                'count_employee_registration'=>$row['count_employee_registration'],
+                'value'=>$i++,
+         );
+        }
+        echo json_encode($db_data);
+
+    }else{
+        echo "error";
+    }
+    $conn->close();
+    return;
+   }
+
+
+
+
+
 ?>
