@@ -7,6 +7,7 @@ class Employee {
   String lastName;
   String image;
   int count;
+
   Employee({
     required this.id,
     required this.firstName,
@@ -28,3 +29,23 @@ class Employee {
 
 List<Employee> userModelFromJson(String str) =>
     List<Employee>.from(json.decode(str).map((x) => Employee.fromJson(x)));
+
+class Datewise {
+  String Date_wise;
+  String count_employee_registration;
+  Datewise({
+    required this.Date_wise,
+    required this.count_employee_registration,
+  });
+
+  factory Datewise.fromJson(Map<String, dynamic> json) {
+    return Datewise(
+      Date_wise: json['Date_wise'] as String,
+      count_employee_registration:
+          json['count_employee_registration'] as String,
+    );
+  }
+}
+
+List<Datewise> dateModelFromJson(String str) =>
+    List<Datewise>.from(json.decode(str).map((x) => Datewise.fromJson(x)));

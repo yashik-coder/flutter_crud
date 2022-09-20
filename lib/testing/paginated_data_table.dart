@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:math';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_crud/charts/cirrcularcharts.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/Employee_Model/employee_model.dart';
@@ -32,6 +33,7 @@ class _PaginateddatatableState extends State<Paginateddatatable> {
   void initState() {
     _employees = [];
     _getEmployees();
+    _dateEmployees();
 
     // TODO: implement initState
     super.initState();
@@ -64,6 +66,21 @@ class _PaginateddatatableState extends State<Paginateddatatable> {
     });
   }
 
+  late List<Datewise> _datewise;
+  var datemodel = <Datewise>[];
+
+  _dateEmployees() async {
+    await Services.dateEmployees().then((datesw) {
+      setState(() {
+        _datewise = datesw;
+        datemodel = datesw;
+        // _chartData = datesw;
+      });
+
+      print("Length ${datesw.length}");
+    });
+  }
+
   bool _isSortAsc = true;
   int _currentSortColumn = 0;
 
@@ -76,76 +93,111 @@ class _PaginateddatatableState extends State<Paginateddatatable> {
       appBar: AppBar(
         title: const Text('Employee List'),
         actions: <Widget>[
-          IconButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => AddEmployee()));
-              },
-              icon: Icon(Icons.add))
+          // IconButton(
+          //   iconSize: 25,
+          //   hoverColor: Colors.redAccent,
+          //   icon: const Icon(
+          //     Icons.add_chart,
+          //     color: Colors.green,
+          //   ),
+          //   onPressed: () {
+          //     // Get.off(Circularchart(
+
+          //     // ));
+          //   },
+          // ),
         ],
       ),
-      body: Container(
-        width: double.infinity,
-        child: SingleChildScrollView(
-          child: PaginatedDataTable(
-            sortAscending: _isSortAsc,
-            source: _dtSource,
-            sortColumnIndex: _currentSortColumn,
-            arrowHeadColor: Colors.blueAccent,
-            columns: [
-              DataColumn(
-                numeric: true,
-                label: Text('ID'),
-                onSort: (columnIndex, _) {
-                  setState(() {
-                    _currentSortColumn = columnIndex;
-                    if (_isSortAsc) {
-                      _employees.sort((a, b) => b.count.compareTo(a.count));
-                    } else {
-                      _employees.sort((a, b) => a.count.compareTo(b.count));
-                    }
-                    _isSortAsc = !_isSortAsc;
-                  });
-                },
-              ),
-              DataColumn(
-                label: Text('First Name'),
-                onSort: (columnIndex, _) {
-                  setState(() {
-                    _currentSortColumn = columnIndex;
-                    if (_isSortAsc) {
-                      _employees.sort((a, b) => b.firstName.compareTo(a.id));
-                    } else {
-                      _employees.sort((a, b) => a.firstName.compareTo(b.id));
-                    }
-                    _isSortAsc = !_isSortAsc;
-                  });
-                },
-              ),
-              DataColumn(
-                label: Text('Last Name'),
-                onSort: (columnIndex, _) {
-                  setState(() {
-                    _currentSortColumn = columnIndex;
-                    if (_isSortAsc) {
-                      _employees.sort((a, b) => b.lastName.compareTo(a.id));
-                    } else {
-                      _employees.sort((a, b) => a.firstName.compareTo(b.id));
-                    }
-                    _isSortAsc = !_isSortAsc;
-                  });
-                },
-              ),
-              DataColumn(label: Text('Image')),
-              DataColumn(label: Text('Action'))
-            ],
-            columnSpacing: 100,
-            horizontalMargin: 10,
-            onRowsPerPageChanged: (perPage) {},
-            rowsPerPage: 10,
-            showCheckboxColumn: false,
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          child: SingleChildScrollView(
+            child: PaginatedDataTable(
+              header: Text('Employee List'),
+              actions: <IconButton>[
+                IconButton(
+                  iconSize: 25,
+                  hoverColor: Colors.redAccent,
+                  icon: const Icon(
+                    Icons.add_chart,
+                    color: Colors.green,
+                  ),
+                  onPressed: () {
+                    Get.off(Circularchart(
+                      date: _datewise,
+                    ));
+                  },
+                ),
+                IconButton(
+                    iconSize: 25,
+                    color: Colors.blueAccent,
+                    hoverColor: Colors.lightGreenAccent,
+                    onPressed: () {
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  AddEmployee()));
+                    },
+                    icon: Icon(Icons.add))
+              ],
+              sortAscending: _isSortAsc,
+              source: _dtSource,
+              sortColumnIndex: _currentSortColumn,
+              arrowHeadColor: Colors.blueAccent,
+              columns: [
+                DataColumn(
+                  numeric: true,
+                  label: Text('ID'),
+                  onSort: (columnIndex, _) {
+                    setState(() {
+                      _currentSortColumn = columnIndex;
+                      if (_isSortAsc) {
+                        _employees.sort((a, b) => b.count.compareTo(a.count));
+                      } else {
+                        _employees.sort((a, b) => a.count.compareTo(b.count));
+                      }
+                      _isSortAsc = !_isSortAsc;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: Text('First Name'),
+                  onSort: (columnIndex, _) {
+                    setState(() {
+                      _currentSortColumn = columnIndex;
+                      if (_isSortAsc) {
+                        _employees.sort((a, b) => b.firstName.compareTo(a.id));
+                      } else {
+                        _employees.sort((a, b) => a.firstName.compareTo(b.id));
+                      }
+                      _isSortAsc = !_isSortAsc;
+                    });
+                  },
+                ),
+                DataColumn(
+                  label: Text('Last Name'),
+                  onSort: (columnIndex, _) {
+                    setState(() {
+                      _currentSortColumn = columnIndex;
+                      if (_isSortAsc) {
+                        _employees.sort((a, b) => b.lastName.compareTo(a.id));
+                      } else {
+                        _employees.sort((a, b) => a.firstName.compareTo(b.id));
+                      }
+                      _isSortAsc = !_isSortAsc;
+                    });
+                  },
+                ),
+                DataColumn(label: Text('Image')),
+                DataColumn(label: Text('Action'))
+              ],
+              columnSpacing: 100,
+              horizontalMargin: 10,
+              onRowsPerPageChanged: (perPage) {},
+              rowsPerPage: 10,
+              showCheckboxColumn: false,
+            ),
           ),
         ),
       ),

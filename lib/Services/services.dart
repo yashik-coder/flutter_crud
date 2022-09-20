@@ -13,6 +13,9 @@ class Services {
   static const _UPDATE_EMP_ACTION = 'UPDATE_EMP';
   static const _DELETE_EMP_ACTION = 'DELETE_EMP';
 
+  //datewise
+  static const _DATE_EMP_ACTION = 'DATE_WISE';
+
   // Method to create the table Employees.
   static Future<String> createTable() async {
     try {
@@ -114,4 +117,35 @@ class Services {
       return "error"; // returning just an "error" string to keep this simple...
     }
   }
+
+
+   
+  static Future<List<Datewise>> dateEmployees() async {
+    try {
+      var map = <String, dynamic>{};
+      map['action'] = _DATE_EMP_ACTION;
+      final response = await http.post(ROOT, body: map);
+      print('dateEmployees Response: ${response.body}');
+      if (200 == response.statusCode) {
+        List<Datewise> list = dateResponse(response.body);
+        return list;
+      } else {
+        return <Datewise>[];
+      }
+    } catch (e) {
+      print(e);
+
+      return <Datewise>[]; // return an empty list on exception/error
+    }
+  }
+
+  static List<Datewise> dateResponse(String responseBody) {
+    final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+    return parsed.map<Datewise>((json) => Datewise.fromJson(json)).toList();
+  }
+
+
+
+
+
 }
