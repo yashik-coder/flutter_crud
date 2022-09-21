@@ -6,6 +6,9 @@ import 'package:flutter_crud/datatable_demo.dart';
 import 'package:flutter_crud/listview_data.dart';
 import 'package:flutter_crud/practice_Image_upload/imageupload.dart';
 import 'package:flutter_crud/screens/add_employee.dart';
+import 'package:flutter_crud/testing/autocompletetextfield.dart';
+import 'package:flutter_crud/testing/searchfieldsuggestion/localfieldsuggestion.dart';
+import 'package:flutter_crud/testing/searchfieldsuggestion/searchfieldsuggestion.dart';
 import 'package:get/get.dart';
 import 'package:flutter_crud/testing/paginated_data_table.dart';
 
@@ -37,7 +40,9 @@ class MyApp extends StatelessWidget {
 
       //home: listdata(),
       //home: DataTableDemo(),
-      home: Paginateddatatable(),
+      //home: NetworkTypeAheadPage(),
+      home: LocalTypeAheadPage(),
+      // home: AutoCompleteDemo(),
       //home: AddEmployee(),
       //home: const UploadImage(title: 'Image Upload'),
       //home: Home(),

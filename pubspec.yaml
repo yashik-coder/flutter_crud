@@ -43,6 +43,9 @@ dependencies:
   get: ^4.6.5
   syncfusion_flutter_charts: ^20.2.49
   fl_chart: ^0.55.1
+  flutter_typeahead: ^4.1.1
+  autocomplete_textfield: ^2.0.1
+  faker: ^2.0.0
 
 dev_dependencies:
   flutter_test:

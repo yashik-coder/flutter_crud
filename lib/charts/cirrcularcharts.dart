@@ -77,7 +77,7 @@ class _CircularchartState extends State<Circularchart> {
             // title: ChartTitle(text: 'Circular chart'),
             tooltipBehavior: _tooltipBehavior,
             legend: Legend(
-              position: LegendPosition.bottom,
+              // position: LegendPosition.bottom,
               toggleSeriesVisibility: true,
               title: LegendTitle(text: 'Datewise'),
               borderColor: Colors.black,
