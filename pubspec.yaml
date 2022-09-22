@@ -46,6 +46,7 @@ dependencies:
   flutter_typeahead: ^4.1.1
   autocomplete_textfield: ^2.0.1
   faker: ^2.0.0
+  modal_progress_hud_nsn: ^0.3.0
 
 dev_dependencies:
   flutter_test:

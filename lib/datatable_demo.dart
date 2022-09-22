@@ -2,7 +2,8 @@ import 'package:adaptive_scrollbar/adaptive_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_crud/Employee_Model/employee_model.dart';
 import 'package:flutter_crud/Services/services.dart';
-import 'package:flutter_crud/screens/add_employee.dart';
+import 'package:flutter_crud/addscreens/add_employee.dart';
+
 import 'package:image_picker/image_picker.dart';
 
 class DataTableDemo extends StatefulWidget {
@@ -124,7 +125,7 @@ class DataTableDemoState extends State<DataTableDemo> {
 
   _deleteEmployee(Employee employee) {
     _showProgress('Deleting Employee...');
-    Services.deleteEmployee(employee.id,employee.image).then((result) {
+    Services.deleteEmployee(employee.id, employee.image).then((result) {
       if ('success' == result) {
         _getEmployees(); // Refresh after delete...
       }

@@ -1,44 +1,37 @@
-import 'package:flutter/material.dart';
-
-
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
+
 import 'package:faker/faker.dart';
 import 'package:http/http.dart' as http;
 
-class User {
-  final String name;
+import '../../Employee_Model/employee_model.dart';
 
-  const User({
-    required this.name,
-  });
 
-  static User fromJson(Map<String, dynamic> json) => User(
-        name: json['name'],
-      );
-}
 
 class UserApi {
-  static Future<List<User>> getUserSuggestions(String query) async {
-    final url = Uri.parse('https://jsonplaceholder.typicode.com/users');
-    final response = await http.get(url);
+  static Future<List<Employee>> getUserSuggestions(String query) async {
+    final url =
+        Uri.parse('http://192.168.29.77/EmployeesDB/emplyees_action.php');
+    var map = <String, dynamic>{};
+    map['action'] = 'GET_ALL';
+    final response = await http.post(url, body: map);
+    print(response);
 
     if (response.statusCode == 200) {
       final List users = json.decode(response.body);
 
-      return users.map((json) => User.fromJson(json)).where((user) {
-        final nameLower = user.name.toLowerCase();
+      return users.map((json) => Employee.fromJson(json)).where((user) {
+        final nameLower = user.firstName.toLowerCase();
+        final lastlower = user.lastName.toLowerCase();
         final queryLower = query.toLowerCase();
 
-        return nameLower.contains(queryLower);
+        return nameLower.contains(queryLower) || lastlower.contains(queryLower);
       }).toList();
     } else {
       throw Exception();
     }
   }
 }
-
-
-
 
 class Useri {
   final String name;
