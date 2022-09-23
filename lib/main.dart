@@ -54,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
           DataColumn(label: Text('ID')),
           DataColumn(label: Text('Name')),
           DataColumn(label: Text('Price')),
-          DataColumn(label: Text('test price'))
+          DataColumn(label: Text('test price')),
         ],
         columnSpacing: 100,
         horizontalMargin: 10,

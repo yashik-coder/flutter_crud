@@ -204,7 +204,7 @@ class _PaginateddatatableState extends State<Paginateddatatable> {
     );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Carifer'),
+        title: const Text('Employee List'),
         actions: [
           // Navigate to the Search Screen
           IconButton(
